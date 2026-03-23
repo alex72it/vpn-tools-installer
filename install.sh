@@ -72,7 +72,16 @@ main() {
   echo
   echo "Готово: /usr/local/bin/${BIN_NAME}"
   echo "Запускаю..."
-  exec /usr/local/bin/${BIN_NAME}
+
+  if [ -t 0 ] && [ -t 1 ]; then
+    exec /usr/local/bin/${BIN_NAME}
+  elif [ -e /dev/tty ]; then
+    exec </dev/tty >/dev/tty 2>/dev/tty /usr/local/bin/${BIN_NAME}
+  else
+    echo "Установлено, но интерактивный запуск невозможен без терминала."
+    echo "Запустите вручную: /usr/local/bin/${BIN_NAME}"
+    exit 0
+  fi
 }
 
 main "$@"
